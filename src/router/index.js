@@ -6,24 +6,28 @@ Vue.use(VueRouter);
 const files = require.context('../views/', true, /\.vue$/);
 const pathArr = [];
 const subNameArr = { home: "后台管理", user: "用户管理", order: "订单管理" };
-const nameArr = { Chart: "图表", Home: "首页", Order: "订单", Auth: "授权", User: "用户" };
-const linkArr = [];
+const nameArr = { Home: "首页", Manage: "图表", Order: "订单", Auth: "授权", User: "用户" };
+const linkInfo = {};
 files.keys().forEach(key => {
   const arr = key.split('/');
   arr.shift();
+  const path = arr[1].split('.').shift().toLowerCase() === 'home' ? '/' : `/${arr[1].split('.').shift().toLowerCase()}`
   const routeInfo = {
-    path: `/${arr[1].split('.').shift().toLowerCase()}`,
+    path: path,
     name: arr[1].split('.').shift(),
     component: () => import(/* webpackChunkName: "[request]" */ '../views/' + arr.join('/'))
   };
-  const linkInfo = {
+  linkInfo[subNameArr[arr[0]]] = linkInfo[subNameArr[arr[0]]] ? linkInfo[subNameArr[arr[0]]] : [];
+  linkInfo[subNameArr[arr[0]]].push({
+    name: nameArr[routeInfo.name],
     parentName: arr[0],
-  };
+    path: routeInfo.path
+  });
   pathArr.push(routeInfo);
-  linkArr.push(linkInfo);
+});
+Vue.prototype.$menuArr = Object.keys(linkInfo).map((key) => {
+  return { name: key, id: linkInfo[key][0].parentName, menu: linkInfo[key] };
 })
-console.log(linkArr);
-console.log(pathArr);
 const routes = [
   {
     path: "/",

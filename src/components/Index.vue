@@ -8,15 +8,18 @@
             :default-openeds="defaultOpeneds"
             :default-active="defaultActive"
           >
-            <el-submenu index="1">
+            <el-submenu v-for="sub in $menuArr" :index="sub.id" :key="sub.id">
               <template slot="title">
-                <i class="el-icon-setting"></i>后台管理
+                <i class="el-icon-setting"></i>{{ sub.name }}
               </template>
-              <router-link to="/">
-                <el-menu-item index="1-1">首页</el-menu-item>
-              </router-link>
-              <router-link to="/order">
-                <el-menu-item index="1-2">订单</el-menu-item>
+              <router-link
+                v-for="menu in sub.menu"
+                :to="menu.path"
+                :key="menu.path"
+              >
+                <el-menu-item :index="menu.path">
+                  {{ menu.name }}
+                </el-menu-item>
               </router-link>
             </el-submenu>
           </el-menu>
@@ -33,9 +36,12 @@
 export default {
   data() {
     return {
-      defaultOpeneds: ["1"],
-      defaultActive: "1-1",
+      defaultOpeneds: ["home"],
+      defaultActive: "/",
     };
+  },
+  created() {
+    console.log(this.$menuArr);
   },
 };
 </script>
