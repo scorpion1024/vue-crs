@@ -1,7 +1,15 @@
 <template>
   <div>
     <el-container style="min-height: 100vh">
-      <el-header>Header</el-header>
+      <el-header class="clearfix">
+        <h1 style="display: inline-block">知名后台管理系统</h1>
+        <el-button
+          type="primary"
+          style="float: right; margin-top: 10px"
+          @click="loginOut()"
+          >退出</el-button
+        >
+      </el-header>
       <el-container>
         <el-aside width="230px">
           <el-menu
@@ -10,7 +18,7 @@
           >
             <el-submenu v-for="sub in $menuArr" :index="sub.id" :key="sub.id">
               <template slot="title">
-                <i class="el-icon-setting"></i>{{ sub.name }}
+                <i class="el-icon-s-tools"></i>{{ sub.name }}
               </template>
               <router-link
                 v-for="menu in sub.menu"
@@ -40,8 +48,12 @@ export default {
       defaultActive: "/",
     };
   },
-  created() {
-    console.log(this.$menuArr);
+  created() {},
+  methods: {
+    loginOut() {
+      sessionStorage.removeItem("token");
+      window.location.href = "/";
+    },
   },
 };
 </script>
