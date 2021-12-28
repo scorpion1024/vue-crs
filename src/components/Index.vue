@@ -3,6 +3,7 @@
     <el-container style="min-height: 100vh">
       <el-header class="clearfix">
         <h1 style="display: inline-block">知名后台管理系统</h1>
+        <span>{{ userInfo.name }}</span>
         <el-button
           type="primary"
           style="float: right; margin-top: 10px"
@@ -18,12 +19,12 @@
           >
             <el-submenu v-for="sub in $menuArr" :index="sub.id" :key="sub.id">
               <template slot="title">
-                <i class="el-icon-s-tools"></i>{{ sub.name }}
+                <i :class="sub.icon"></i>{{ sub.name }}
               </template>
               <router-link
                 v-for="menu in sub.menu"
                 :to="menu.path"
-                :key="menu.path"
+                :key="menu.path + '/' + sub.id"
               >
                 <el-menu-item :index="menu.path">
                   {{ menu.name }}
@@ -41,14 +42,18 @@
 </template>
 
 <script>
+import { decode } from "@/utils/utils";
 export default {
   data() {
     return {
       defaultOpeneds: ["home"],
       defaultActive: "/",
+      userInfo: {},
     };
   },
-  created() {},
+  created() {
+    this.userInfo = JSON.parse(atob(decode(sessionStorage.getItem("token"))));
+  },
   methods: {
     loginOut() {
       sessionStorage.removeItem("token");
