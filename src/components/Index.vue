@@ -2,16 +2,16 @@
   <div>
     <el-container style="min-height: 100vh">
       <el-header class="clearfix">
-        <h1 style="display: inline-block;font-size:24px;">知名后台管理系统</h1>
-        <span style="float:right;font-size:20px;">
+        <h1 style="display: inline-block; font-size: 24px">知名后台管理系统</h1>
+        <span style="float: right; font-size: 20px">
           {{ userInfo.name }}
           <el-button
-          type="primary"
-          style="margin-left:40px;margin-top: 10px"
-          @click="loginOut()"
-          >退出</el-button
-        ></span>
-        
+            type="primary"
+            style="margin-left: 40px; margin-top: 10px"
+            @click="loginOut()"
+            >退出</el-button
+          ></span
+        >
       </el-header>
       <el-container>
         <el-aside width="230px">
@@ -55,6 +55,14 @@ export default {
   },
   created() {
     this.userInfo = JSON.parse(atob(decode(sessionStorage.getItem("token"))));
+    this.defaultActive = this.$route.path;
+    this.$menuArr.forEach((item) => {
+      item.menu.forEach((e) => {
+        if (this.$route.path === e.path) {
+          this.defaultOpeneds = [e.parentName];
+        }
+      });
+    });
   },
   methods: {
     loginOut() {
@@ -78,5 +86,8 @@ export default {
   color: #333;
   border-right: solid 1px #e6e6e6;
   background-color: rgb(238, 241, 246);
+}
+.el-main {
+  position: relative;
 }
 </style>
