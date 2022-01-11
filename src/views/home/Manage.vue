@@ -1,41 +1,72 @@
 <template>
-  <div>Chart</div>
+  <div>
+    <div id="echart" class="chart-con"></div>
+  </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
 export default {
   data() {
-    return {
-      seriesData: [],
-      legendData : { left: "20px", orient: "horizontal", data: [] }
-    };
+    return { charts: {} };
   },
-  mounted() {
-    this.$api
-      .getWeaherData()
-      .then((res) => {
-        this.seriesData = res.echart.map(item => {
+  methods: {
+    drawChart(id) {
+      let option = {
+        title: {
+          text: "城市降雨量",
+          x: "center",
+        },
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: { left: "20px", orient: "horizontal", data: [] },
+        xAxis: {
+          type: "time",
+          splitLine: {
+            show: false,
+          },
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [],
+      };
+      this.charts = echarts.init(document.getElementById(id));
+      this.$api
+        .getWeaherData()
+        .then((res) => {
+          option.series = res.echart.map((item) => {
             let data = {
               name: item.name,
               type: "line",
               smooth: false,
               data: [],
             };
-            this.legendData.data.push(item.name);
+            option.legend.data.push(item.name);
             item.data.forEach((value) => {
               data.data.push([new Date(value[0]), value[1]]);
             });
             return data;
-          })
-        console.log(this.seriesData);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+          });
+          this.charts.setOption(option);
+          window.addEventListener("resize", () => {
+            this.charts.resize();
+          });
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    },
+  },
+  mounted() {
+    this.drawChart("echart");
   },
 };
 </script>
 
-<style>
+<style scoped>
+.chart-con {
+  height: 400px;
+}
 </style>

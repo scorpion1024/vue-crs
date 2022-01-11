@@ -51,7 +51,6 @@ export default {
     };
   },
   mounted() {
-    console.dir(this);
     this.wordArr = this.dealSpan();
     this.ContainerSize = this.getContainerSize();
     this.startFly();
